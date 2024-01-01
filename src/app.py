@@ -1,5 +1,6 @@
 import pygame 
 
+import constants
 import grid
 
 
@@ -8,24 +9,23 @@ class App:
     def __init__(self) -> None:
         self.__running: bool = True
         self.__grid: grid.Grid = grid.Grid()
-        self.__surface: pygame.Surface = pygame.display.set_mode((600, 600)) 
+        self.__surface: pygame.Surface = pygame.display.set_mode(constants.WINDOW_SIZE) 
+        self.__clock = pygame.time.Clock()
 
     def is_running(self) -> bool:
         return self.__running
 
     def handle_events(self) -> None:
         for event in pygame.event.get():
-            
             if event.type == pygame.QUIT:
                 self.__running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                print("TODO App::handle_events::MOUSEBUtTONDOWN")
+                self.__grid.handle_click()
 
     def handle_update(self) -> None:
         print("TODO App::handle_update")
 
     def handle_render(self) -> None:
-        
         self.__grid.draw_at(self.__surface)
         
         pygame.display.flip()
@@ -37,3 +37,6 @@ class App:
             self.handle_events()
             self.handle_update()
             self.handle_render()
+            self.__clock.tick(constants.FPS)
+
+        pygame.quit()
