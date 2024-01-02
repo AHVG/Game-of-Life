@@ -6,6 +6,10 @@ import grid
 
 class App:
 
+    # TODO: Possibilitar que o usuário aumente e diminua o tempo de atualização do grid (modo pausar também seria interessante)
+    # TODO: Possibilitar que o usuário gere aleatoriamente um grid
+    # TODO: Arrumar o desenho do grid (colocar as teclas possiveis para utilizar)
+
     def __init__(self) -> None:
         self.__running: bool = True
         self.__grid: grid.Grid = grid.Grid()
@@ -26,6 +30,8 @@ class App:
         self.__grid.update()
 
     def handle_render(self) -> None:
+        self.__surface.fill((100, 100, 100))
+
         self.__grid.draw_at(self.__surface)
         
         pygame.display.flip()

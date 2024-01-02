@@ -58,7 +58,7 @@ class Grid:
             for column in range(constants.NUMBER_OF_SQUARES):
                 pygame.draw.rect(surface,
                                  constants.SQUARE_COLOR_WHEN_ALIVE if self.__current_state[line][column] else constants.SQUARE_COLOR_WHEN_DEAD, 
-                                 pygame.Rect(column * constants.SQUARE_HEIGHT, 
-                                             line * constants.SQUARE_WIDTH, 
-                                             constants.SQUARE_WIDTH, 
-                                             constants.SQUARE_HEIGHT))
+                                 pygame.Rect(column * constants.SQUARE_HEIGHT + 1, 
+                                             line * constants.SQUARE_WIDTH + 1, 
+                                             constants.SQUARE_WIDTH - 2, 
+                                             constants.SQUARE_HEIGHT - 2))
