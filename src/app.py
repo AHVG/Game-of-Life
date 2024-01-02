@@ -6,7 +6,6 @@ import grid
 
 class App:
 
-    # TODO: Arrumar o desenho do grid (colocar as teclas possiveis para utilizar)
     # TODO: Colocar hover no tile antes de clicar?
     # TODO: Criar uma classe que gerenciará a redenrização?
 
