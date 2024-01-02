@@ -55,5 +55,4 @@ class Tile:
         elif self.__alive:
             color = constants.SQUARE_COLOR_WHEN_ALIVE
 
-        
         pygame.draw.rect(surface, color, self.__rect)
