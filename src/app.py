@@ -23,7 +23,7 @@ class App:
                 self.__grid.handle_click()
 
     def handle_update(self) -> None:
-        print("TODO App::handle_update")
+        self.__grid.update()
 
     def handle_render(self) -> None:
         self.__grid.draw_at(self.__surface)
