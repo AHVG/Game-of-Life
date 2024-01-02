@@ -3,14 +3,19 @@ import random
 import copy
 
 import constants
+import tile
 
 
 class Grid:
 
-    # TODO: Fazer uma classe para tile?
 
     def __init__(self) -> None:
-        self.__current_state: list[list[bool]] = [[random.choice([0, 0, 0, 1]) for _ in range(constants.NUMBER_OF_SQUARES)] for _ in range(constants.NUMBER_OF_SQUARES)]
+        self.__current_state: list[list[bool]] = [[tile.Tile(random.choice([False, False, False, True]), 
+                                                             pygame.Rect(column * constants.SQUARE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
+                                                             line * constants.SQUARE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
+                                                             constants.SQUARE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
+                                                             constants.SQUARE_HEIGHT - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(constants.NUMBER_OF_SQUARES)] 
+                                                  for line in range(constants.NUMBER_OF_SQUARES)]
         self.__next_state: list[list[bool]] = copy.deepcopy(self.__current_state)
         self.__frames_per_second: int = 20
         self.__frames: int = 0
@@ -32,7 +37,7 @@ class Grid:
                     not (-1 < d_line + line < constants.NUMBER_OF_SQUARES and -1 < d_column + column < constants.NUMBER_OF_SQUARES)):
                     continue
                 
-                if self.__current_state[d_line + line][d_column + column]:
+                if self.__current_state[d_line + line][d_column + column].is_alive():
                     alive += 1
 
         return alive
@@ -51,22 +56,18 @@ class Grid:
 
             if (-1 < mouse_x < constants.NUMBER_OF_SQUARES and
                 -1 < mouse_y < constants.NUMBER_OF_SQUARES):
-                self.__current_state[mouse_y][mouse_x] = not self.__current_state[mouse_y][mouse_x]
+                self.__current_state[mouse_y][mouse_x].switch_state()
 
 
     def handle_keydown(self, key: int) -> None:
 
         if key == pygame.K_DOWN:
-            self.__frames_per_second -= constants.FRAME_STEP
-
-            if self.__frames_per_second < constants.MIN_FRAMES:
-                self.__frames_per_second += constants.FRAME_STEP
+            if self.__frames_per_second > constants.MIN_FRAMES:
+                self.__frames_per_second -= constants.FRAME_STEP
 
         elif key == pygame.K_UP:
-            self.__frames_per_second += constants.FRAME_STEP
-
-            if self.__frames_per_second > constants.MAX_FRAMES:
-                self.__frames_per_second -= constants.FRAME_STEP
+            if self.__frames_per_second < constants.MAX_FRAMES:
+                self.__frames_per_second += constants.FRAME_STEP
 
         elif key == pygame.K_p:
             self.__paused = not self.__paused
@@ -76,6 +77,11 @@ class Grid:
 
 
     def update(self) -> None:
+
+        for line in range(constants.NUMBER_OF_SQUARES):
+            for column in range(constants.NUMBER_OF_SQUARES):
+                self.__current_state[line][column].update()
+                self.__next_state[line][column].update()
 
         if self.__paused:
             return
@@ -92,16 +98,16 @@ class Grid:
                 neighbors = self.__get_neighbors_alive(line, column)
 
                 if self.__current_state[line][column] and neighbors < 2:
-                    self.__next_state[line][column] = False
+                    self.__next_state[line][column].kill()
 
                 elif self.__current_state[line][column] and neighbors > 3:
-                    self.__next_state[line][column] = False
+                    self.__next_state[line][column].kill()
 
                 elif neighbors == 3:
-                    self.__next_state[line][column] = True
+                    self.__next_state[line][column].revive()
 
                 elif neighbors == 2:
-                    self.__next_state[line][column] = self.__current_state[line][column]
+                    self.__next_state[line][column].keep_state()
 
         self.__current_state: list[list[bool]] = copy.deepcopy(self.__next_state)
 
@@ -133,9 +139,4 @@ class Grid:
 
         for line in range(constants.NUMBER_OF_SQUARES):
             for column in range(constants.NUMBER_OF_SQUARES):
-                pygame.draw.rect(surface,
-                                 constants.SQUARE_COLOR_WHEN_ALIVE if self.__current_state[line][column] else constants.SQUARE_COLOR_WHEN_DEAD, 
-                                 pygame.Rect(column * constants.SQUARE_WIDTH + 1 + constants.MENU_SIZE[0], 
-                                             line * constants.SQUARE_HEIGHT + 1, 
-                                             constants.SQUARE_WIDTH - 2, 
-                                             constants.SQUARE_HEIGHT - 2))
+                self.__current_state[line][column].draw_at(surface)
