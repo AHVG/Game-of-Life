@@ -14,14 +14,9 @@ class App:
         pygame.font.init()
         
         self.__running: bool = True
-        
         self.__grid: grid.Grid = grid.Grid()
-
         self.__clock = pygame.time.Clock()
-
-        self.__surface: pygame.Surface = pygame.display.set_mode(constants.WINDOW_SIZE) 
-        pygame.display.set_caption(f"Game of Life - {int(self.__clock.get_fps())}")
-        
+        self.__surface: pygame.Surface = pygame.display.set_mode(constants.WINDOW_SIZE)         
 
 
     def is_running(self) -> bool:
