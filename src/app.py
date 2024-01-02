@@ -6,7 +6,6 @@ import grid
 
 class App:
 
-    # TODO: Possibilitar que o usuário gere aleatoriamente um grid
     # TODO: Arrumar o desenho do grid (colocar as teclas possiveis para utilizar)
     # TODO: Colocar hover no tile antes de clicar?
 
@@ -16,8 +15,10 @@ class App:
         self.__surface: pygame.Surface = pygame.display.set_mode(constants.WINDOW_SIZE) 
         self.__clock = pygame.time.Clock()
 
+
     def is_running(self) -> bool:
         return self.__running
+
 
     def handle_events(self) -> None:
 
@@ -25,13 +26,17 @@ class App:
 
             if event.type == pygame.QUIT:
                 self.__running = False
+
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.__grid.handle_click()
+
             elif event.type == pygame.KEYDOWN:
                 self.__grid.handle_keydown(event.key)
 
+
     def handle_update(self) -> None:
         self.__grid.update()
+
 
     def handle_render(self) -> None:
         self.__surface.fill((100, 100, 100))
@@ -39,6 +44,7 @@ class App:
         self.__grid.draw_at(self.__surface)
         
         pygame.display.flip()
+
 
     def run(self) -> None:
         pygame.init()

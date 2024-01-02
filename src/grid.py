@@ -16,6 +16,12 @@ class Grid:
         self.__frames: int = 0
         self.__paused: bool = False
 
+
+    def __reset(self):
+        self.__current_state = [[random.choice([0, 0, 0, 1]) for _ in range(constants.NUMBER_OF_SQUARES)] for _ in range(constants.NUMBER_OF_SQUARES)]
+        self.__next_state = copy.deepcopy(self.__current_state)
+
+
     def __get_neighbors_alive(self, line: int, column: int) -> int:
         alive = 0
 
@@ -31,6 +37,7 @@ class Grid:
 
         return alive
 
+
     def handle_click(self) -> None:
 
         if pygame.mouse.get_pressed()[0]:
@@ -40,6 +47,7 @@ class Grid:
             if (0 < mouse_x < constants.NUMBER_OF_SQUARES and
                 0 < mouse_y < constants.NUMBER_OF_SQUARES):
                 self.__current_state[mouse_y][mouse_x] = not self.__current_state[mouse_y][mouse_x]
+
 
     def handle_keydown(self, key: int) -> None:
 
@@ -58,8 +66,12 @@ class Grid:
         elif key == pygame.K_p:
             self.__paused = not self.__paused
 
+        elif key == pygame.K_r:
+            self.__reset()
+
 
     def update(self) -> None:
+
         if self.__paused:
             return
 
@@ -76,23 +88,26 @@ class Grid:
 
                 if self.__current_state[line][column] and neighbors < 2:
                     self.__next_state[line][column] = False
+
                 elif self.__current_state[line][column] and neighbors > 3:
                     self.__next_state[line][column] = False
+
                 elif neighbors == 3:
                     self.__next_state[line][column] = True
+
                 elif neighbors == 2:
                     self.__next_state[line][column] = self.__current_state[line][column]
-                    pass
 
         self.__current_state: list[list[bool]] = copy.deepcopy(self.__next_state)
-    
+
+
     def draw_at(self, surface: pygame.Surface) -> None:
 
         for line in range(constants.NUMBER_OF_SQUARES):
             for column in range(constants.NUMBER_OF_SQUARES):
                 pygame.draw.rect(surface,
                                  constants.SQUARE_COLOR_WHEN_ALIVE if self.__current_state[line][column] else constants.SQUARE_COLOR_WHEN_DEAD, 
-                                 pygame.Rect(column * constants.SQUARE_HEIGHT + 1, 
-                                             line * constants.SQUARE_WIDTH + 1, 
+                                 pygame.Rect(column * constants.SQUARE_WIDTH + 1 + constants.MENU_SIZE[0], 
+                                             line * constants.SQUARE_HEIGHT + 1, 
                                              constants.SQUARE_WIDTH - 2, 
                                              constants.SQUARE_HEIGHT - 2))
