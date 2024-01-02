@@ -42,7 +42,13 @@ class Grid:
 
         if pygame.mouse.get_pressed()[0]:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            mouse_x, mouse_y = int(mouse_x // constants.SQUARE_WIDTH), int(mouse_y // constants.SQUARE_HEIGHT)
+
+            if mouse_x < constants.MENU_SIZE[0]:
+                return
+            
+            mouse_x -= constants.MENU_SIZE[0]
+            
+            mouse_x, mouse_y = int(mouse_x// constants.SQUARE_WIDTH), int(mouse_y // constants.SQUARE_HEIGHT)
 
             if (0 < mouse_x < constants.NUMBER_OF_SQUARES and
                 0 < mouse_y < constants.NUMBER_OF_SQUARES):
@@ -52,16 +58,16 @@ class Grid:
     def handle_keydown(self, key: int) -> None:
 
         if key == pygame.K_UP:
-            self.__number_of_frames_until_updated += 5
-
-            if self.__number_of_frames_until_updated > constants.MAX_FRAMES:
-                self.__number_of_frames_until_updated -= 5
-
-        elif key == pygame.K_DOWN:
             self.__number_of_frames_until_updated -= 5
 
             if self.__number_of_frames_until_updated < constants.MIN_FRAMES:
                 self.__number_of_frames_until_updated += 5
+
+        elif key == pygame.K_DOWN:
+            self.__number_of_frames_until_updated += 5
+
+            if self.__number_of_frames_until_updated > constants.MAX_FRAMES:
+                self.__number_of_frames_until_updated -= 5
 
         elif key == pygame.K_p:
             self.__paused = not self.__paused

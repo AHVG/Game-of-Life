@@ -8,11 +8,18 @@ class App:
 
     # TODO: Arrumar o desenho do grid (colocar as teclas possiveis para utilizar)
     # TODO: Colocar hover no tile antes de clicar?
+    # TODO: Criar uma classe que gerenciará a redenrização?
 
     def __init__(self) -> None:
+        pygame.init()
+        
         self.__running: bool = True
+        
         self.__grid: grid.Grid = grid.Grid()
+
         self.__surface: pygame.Surface = pygame.display.set_mode(constants.WINDOW_SIZE) 
+        pygame.display.set_caption("Game of Life")
+        
         self.__clock = pygame.time.Clock()
 
 
@@ -47,7 +54,6 @@ class App:
 
 
     def run(self) -> None:
-        pygame.init()
 
         while self.is_running():
             self.handle_events()
