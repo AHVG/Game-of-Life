@@ -6,9 +6,9 @@ import grid
 
 class App:
 
-    # TODO: Possibilitar que o usuário aumente e diminua o tempo de atualização do grid (modo pausar também seria interessante)
     # TODO: Possibilitar que o usuário gere aleatoriamente um grid
     # TODO: Arrumar o desenho do grid (colocar as teclas possiveis para utilizar)
+    # TODO: Colocar hover no tile antes de clicar?
 
     def __init__(self) -> None:
         self.__running: bool = True
@@ -20,11 +20,15 @@ class App:
         return self.__running
 
     def handle_events(self) -> None:
+
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 self.__running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 self.__grid.handle_click()
+            elif event.type == pygame.KEYDOWN:
+                self.__grid.handle_keydown(event.key)
 
     def handle_update(self) -> None:
         self.__grid.update()

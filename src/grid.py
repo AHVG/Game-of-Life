@@ -7,11 +7,14 @@ import constants
 
 class Grid:
 
+    # TODO: Fazer uma classe para tile?
+
     def __init__(self) -> None:
         self.__current_state: list[list[bool]] = [[random.choice([0, 0, 0, 1]) for _ in range(constants.NUMBER_OF_SQUARES)] for _ in range(constants.NUMBER_OF_SQUARES)]
         self.__next_state: list[list[bool]] = copy.deepcopy(self.__current_state)
         self.__number_of_frames_until_updated: int = 20
         self.__frames: int = 0
+        self.__paused: bool = False
 
     def __get_neighbors_alive(self, line: int, column: int) -> int:
         alive = 0
@@ -29,6 +32,7 @@ class Grid:
         return alive
 
     def handle_click(self) -> None:
+
         if pygame.mouse.get_pressed()[0]:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             mouse_x, mouse_y = int(mouse_x // constants.SQUARE_WIDTH), int(mouse_y // constants.SQUARE_HEIGHT)
@@ -37,7 +41,28 @@ class Grid:
                 0 < mouse_y < constants.NUMBER_OF_SQUARES):
                 self.__current_state[mouse_y][mouse_x] = not self.__current_state[mouse_y][mouse_x]
 
+    def handle_keydown(self, key: int) -> None:
+
+        if key == pygame.K_UP:
+            self.__number_of_frames_until_updated += 5
+
+            if self.__number_of_frames_until_updated > constants.MAX_FRAMES:
+                self.__number_of_frames_until_updated -= 5
+
+        elif key == pygame.K_DOWN:
+            self.__number_of_frames_until_updated -= 5
+
+            if self.__number_of_frames_until_updated < constants.MIN_FRAMES:
+                self.__number_of_frames_until_updated += 5
+
+        elif key == pygame.K_p:
+            self.__paused = not self.__paused
+
+
     def update(self) -> None:
+        if self.__paused:
+            return
+
         self.__frames += 1
 
         if self.__frames < self.__number_of_frames_until_updated:
@@ -62,6 +87,7 @@ class Grid:
         self.__current_state: list[list[bool]] = copy.deepcopy(self.__next_state)
     
     def draw_at(self, surface: pygame.Surface) -> None:
+
         for line in range(constants.NUMBER_OF_SQUARES):
             for column in range(constants.NUMBER_OF_SQUARES):
                 pygame.draw.rect(surface,
