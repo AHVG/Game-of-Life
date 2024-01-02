@@ -109,6 +109,27 @@ class Grid:
 
     def draw_at(self, surface: pygame.Surface) -> None:
 
+        helper_title_font = pygame.font.Font("./fonts/Minecraft.ttf", 50)
+        helper_font = pygame.font.Font("./fonts/Minecraft.ttf", 21)
+
+        speed_font = pygame.font.Font("./fonts/Minecraft.ttf", 35)
+
+        helper_title = helper_title_font.render('Keys', False, (180, 180, 180))
+        arrow_up_text = helper_font.render('Arrow UP - Increase simulation speed', False, (180, 180, 180))
+        arrow_down_text = helper_font.render('Arrow DOWN - Decrease simulation speed', False, (180, 180, 180))
+        r_text = helper_font.render('R - Reset the grid randomly', False, (180, 180, 180))
+        p_text = helper_font.render('P - Pause the grid', False, (180, 180, 180))
+
+        speed_text = speed_font.render(f"Simulation Speed: {constants.FPS / self.__number_of_frames_until_updated:.1f}x", False, (180, 180, 180))
+
+        surface.blit(helper_title, (10, 30))
+        surface.blit(arrow_up_text, (10, 110))
+        surface.blit(arrow_down_text, (10, 150))
+        surface.blit(r_text, (10, 190))
+        surface.blit(p_text, (10, 230))
+
+        surface.blit(speed_text, (10, 350))
+
         for line in range(constants.NUMBER_OF_SQUARES):
             for column in range(constants.NUMBER_OF_SQUARES):
                 pygame.draw.rect(surface,
