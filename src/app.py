@@ -6,9 +6,6 @@ import grid
 
 class App:
 
-    # TODO: Colocar hover no tile antes de clicar?
-    # TODO: Criar uma classe que gerenciará a redenrização?
-
     def __init__(self) -> None:
         pygame.init()
         pygame.font.init()

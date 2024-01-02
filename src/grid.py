@@ -8,9 +8,8 @@ import tile
 
 class Grid:
 
-
     def __init__(self) -> None:
-        self.__current_state: list[list[bool]] = [[tile.Tile(random.choice([False, False, False, True]), 
+        self.__current_state: list[list[bool]] = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
                                                              pygame.Rect(column * constants.SQUARE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
                                                              line * constants.SQUARE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
                                                              constants.SQUARE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
@@ -23,7 +22,12 @@ class Grid:
 
 
     def __reset(self):
-        self.__current_state = [[random.choice([0, 0, 0, 1]) for _ in range(constants.NUMBER_OF_SQUARES)] for _ in range(constants.NUMBER_OF_SQUARES)]
+        self.__current_state: list[list[bool]] = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
+                                                             pygame.Rect(column * constants.SQUARE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
+                                                             line * constants.SQUARE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
+                                                             constants.SQUARE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
+                                                             constants.SQUARE_HEIGHT - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(constants.NUMBER_OF_SQUARES)] 
+                                                  for line in range(constants.NUMBER_OF_SQUARES)]
         self.__next_state = copy.deepcopy(self.__current_state)
 
 
@@ -46,17 +50,10 @@ class Grid:
     def handle_click(self) -> None:
 
         if pygame.mouse.get_pressed()[0]:
-            mouse_x, mouse_y = pygame.mouse.get_pos()
-
-            if mouse_x < constants.MENU_SIZE[0]:
-                return
-                        
-            mouse_x -= constants.MENU_SIZE[0]
-            mouse_x, mouse_y = int(mouse_x// constants.SQUARE_WIDTH), int(mouse_y // constants.SQUARE_HEIGHT)
-
-            if (-1 < mouse_x < constants.NUMBER_OF_SQUARES and
-                -1 < mouse_y < constants.NUMBER_OF_SQUARES):
-                self.__current_state[mouse_y][mouse_x].switch_state()
+            for line in self.__current_state:
+                for tile in line:
+                    if tile.get_rect().collidepoint(pygame.mouse.get_pos()):
+                        tile.switch_state()
 
 
     def handle_keydown(self, key: int) -> None:
@@ -78,38 +75,33 @@ class Grid:
 
     def update(self) -> None:
 
+        if not self.__paused:
+            self.__frames += 1
+
+            if self.__frames >= 60.0 / self.__frames_per_second:
+                self.__frames = 0
+
+                for line in range(constants.NUMBER_OF_SQUARES):
+                    for column in range(constants.NUMBER_OF_SQUARES):
+                        neighbors = self.__get_neighbors_alive(line, column)
+
+                        if self.__current_state[line][column] and neighbors < 2:
+                            self.__next_state[line][column].kill()
+
+                        elif self.__current_state[line][column] and neighbors > 3:
+                            self.__next_state[line][column].kill()
+
+                        elif neighbors == 3:
+                            self.__next_state[line][column].revive()
+
+                        elif neighbors == 2:
+                            self.__next_state[line][column].keep_state()
+
+                self.__current_state: list[list[bool]] = copy.deepcopy(self.__next_state)
+
         for line in range(constants.NUMBER_OF_SQUARES):
             for column in range(constants.NUMBER_OF_SQUARES):
                 self.__current_state[line][column].update()
-                self.__next_state[line][column].update()
-
-        if self.__paused:
-            return
-
-        self.__frames += 1
-
-        if self.__frames < 60.0 / self.__frames_per_second:
-            return
-
-        self.__frames = 0
-
-        for line in range(constants.NUMBER_OF_SQUARES):
-            for column in range(constants.NUMBER_OF_SQUARES):
-                neighbors = self.__get_neighbors_alive(line, column)
-
-                if self.__current_state[line][column] and neighbors < 2:
-                    self.__next_state[line][column].kill()
-
-                elif self.__current_state[line][column] and neighbors > 3:
-                    self.__next_state[line][column].kill()
-
-                elif neighbors == 3:
-                    self.__next_state[line][column].revive()
-
-                elif neighbors == 2:
-                    self.__next_state[line][column].keep_state()
-
-        self.__current_state: list[list[bool]] = copy.deepcopy(self.__next_state)
 
 
     def draw_at(self, surface: pygame.Surface) -> None:

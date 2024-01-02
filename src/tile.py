@@ -35,6 +35,10 @@ class Tile:
         self.__selected = True
 
     
+    def get_rect(self) -> pygame.Rect:
+        return self.__rect
+
+    
     def update(self) -> None:
         self.__selected = False
 
