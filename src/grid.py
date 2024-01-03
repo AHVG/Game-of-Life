@@ -8,8 +8,6 @@ import tile
 
 class Grid:
 
-    # TODO: Informar na tela a possibilidade de aumentar e diminuir o tamanho e mostrar o atual tamanho
-
     def __init__(self) -> None:
         self.__current_state: list[list[tile.Tile]] = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
                                                              pygame.Rect(column * constants.TILE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
@@ -22,6 +20,10 @@ class Grid:
         self.__frames: int = 0
         self.__paused: bool = False
 
+        self.__current_number_of_tiles = constants.NUMBER_OF_TILES
+        self.__current_tile_width = constants.TILE_WIDTH
+        self.__current_tile_height = constants.TILE_HEIGHT
+
         self.__helper_title_font = pygame.font.Font("./fonts/Minecraft.ttf", 50)
         self.__helper_font = pygame.font.Font("./fonts/Minecraft.ttf", 21)
 
@@ -30,15 +32,15 @@ class Grid:
         self.__helper_title = self.__helper_title_font.render('Keys', False, (180, 180, 180))
         self.__arrow_up_text = self.__helper_font.render('Arrow UP - Increase simulation speed', False, (180, 180, 180))
         self.__arrow_down_text = self.__helper_font.render('Arrow DOWN - Decrease simulation speed', False, (180, 180, 180))
+        self.__arrow_right_text = self.__helper_font.render('Arrow RIGHT - Increase grid size', False, (180, 180, 180))
+        self.__arrow_left_text = self.__helper_font.render('Arrow LEFT - Decrease grid size', False, (180, 180, 180))
         self.__r_text = self.__helper_font.render('R - Reset the grid randomly', False, (180, 180, 180))
         self.__p_text = self.__helper_font.render('P - Pause the grid', False, (180, 180, 180))
         self.__click_text = self.__helper_font.render('Click - Switch tile state', False, (180, 180, 180))
 
         self.__speed_text = self.__speed_font.render(f"Speed: {self.__frames_per_second} frames per second", False, (180, 180, 180))
+        self.__grid_size_text = self.__speed_font.render(f"Size: {self.__current_number_of_tiles}x{self.__current_number_of_tiles}", False, (180, 180, 180))
 
-        self.__current_number_of_tiles = constants.NUMBER_OF_TILES
-        self.__current_tile_width = constants.TILE_WIDTH
-        self.__current_tile_height = constants.TILE_HEIGHT
 
 
     def __reset(self):
@@ -91,13 +93,13 @@ class Grid:
             if self.__frames_per_second < constants.MAX_FRAMES:
                 self.__frames_per_second += constants.FRAME_STEP
 
-        elif key == pygame.K_m:
+        elif key == pygame.K_RIGHT:
             if self.__current_number_of_tiles < constants.MAX_NUMBER_OF_TILES:
                 self.__current_number_of_tiles += 1
                 self.__recalculate_grid_dimensions()
                 self.__reset()
 
-        elif key == pygame.K_n:
+        elif key == pygame.K_LEFT:
             if self.__current_number_of_tiles > constants.MIN_NUMBER_OF_TILES:
                 self.__current_number_of_tiles -= 1
                 self.__recalculate_grid_dimensions()
@@ -146,12 +148,16 @@ class Grid:
         surface.blit(self.__helper_title, (10, 30))
         surface.blit(self.__arrow_up_text, (10, 110))
         surface.blit(self.__arrow_down_text, (10, 150))
-        surface.blit(self.__r_text, (10, 190))
-        surface.blit(self.__p_text, (10, 230))
-        surface.blit(self.__click_text, (10, 270))
+        surface.blit(self.__arrow_right_text, (10, 190))
+        surface.blit(self.__arrow_left_text, (10, 230))
+        surface.blit(self.__r_text, (10, 270))
+        surface.blit(self.__p_text, (10, 310))
+        surface.blit(self.__click_text, (10, 350))
 
         self.__speed_text = self.__speed_font.render(f"Speed: {self.__frames_per_second} frames per second", False, (180, 180, 180))
-        surface.blit(self.__speed_text, (10, 390))
+        surface.blit(self.__speed_text, (10, 450))
+        self.__grid_size_text = self.__speed_font.render(f"Size: {self.__current_number_of_tiles}x{self.__current_number_of_tiles}", False, (180, 180, 180))
+        surface.blit(self.__grid_size_text, (10, 510))
 
         for line in range(self.__current_number_of_tiles):
             for column in range(self.__current_number_of_tiles):
