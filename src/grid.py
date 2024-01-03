@@ -8,21 +8,25 @@ import tile
 
 class Grid:
 
+    # TODO: arrumar as fontes
+    # TODO: fazer tamanho variavel do grid para o usuario escolher
+    # TODO: trocar square por tile
+
     def __init__(self) -> None:
-        self.__current_state: list[list[bool]] = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
+        self.__current_state: list[list[tile.Tile]] = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
                                                              pygame.Rect(column * constants.SQUARE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
                                                              line * constants.SQUARE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
                                                              constants.SQUARE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
                                                              constants.SQUARE_HEIGHT - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(constants.NUMBER_OF_SQUARES)] 
                                                   for line in range(constants.NUMBER_OF_SQUARES)]
-        self.__next_state: list[list[bool]] = copy.deepcopy(self.__current_state)
+        self.__next_state: list[list[tile.Tile]] = copy.deepcopy(self.__current_state)
         self.__frames_per_second: int = 20
         self.__frames: int = 0
         self.__paused: bool = False
 
 
     def __reset(self):
-        self.__current_state: list[list[bool]] = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
+        self.__current_state = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
                                                              pygame.Rect(column * constants.SQUARE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
                                                              line * constants.SQUARE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
                                                              constants.SQUARE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
@@ -97,7 +101,7 @@ class Grid:
                         elif neighbors == 2:
                             self.__next_state[line][column].keep_state()
 
-                self.__current_state: list[list[bool]] = copy.deepcopy(self.__next_state)
+                self.__current_state = copy.deepcopy(self.__next_state)
 
         for line in range(constants.NUMBER_OF_SQUARES):
             for column in range(constants.NUMBER_OF_SQUARES):
