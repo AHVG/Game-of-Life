@@ -9,15 +9,14 @@ import tile
 class Grid:
 
     # TODO: fazer tamanho variavel do grid para o usuario escolher
-    # TODO: trocar square por tile
 
     def __init__(self) -> None:
         self.__current_state: list[list[tile.Tile]] = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
-                                                             pygame.Rect(column * constants.SQUARE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
-                                                             line * constants.SQUARE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
-                                                             constants.SQUARE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
-                                                             constants.SQUARE_HEIGHT - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(constants.NUMBER_OF_SQUARES)] 
-                                                  for line in range(constants.NUMBER_OF_SQUARES)]
+                                                             pygame.Rect(column * constants.TILE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
+                                                             line * constants.TILE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
+                                                             constants.TILE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
+                                                             constants.TILE_HEIGHT - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(constants.NUMBER_OF_TILES)] 
+                                                  for line in range(constants.NUMBER_OF_TILES)]
         self.__next_state: list[list[tile.Tile]] = copy.deepcopy(self.__current_state)
         self.__frames_per_second: int = 20
         self.__frames: int = 0
@@ -40,11 +39,11 @@ class Grid:
 
     def __reset(self):
         self.__current_state = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
-                                                             pygame.Rect(column * constants.SQUARE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
-                                                             line * constants.SQUARE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
-                                                             constants.SQUARE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
-                                                             constants.SQUARE_HEIGHT - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(constants.NUMBER_OF_SQUARES)] 
-                                                  for line in range(constants.NUMBER_OF_SQUARES)]
+                                                             pygame.Rect(column * constants.TILE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
+                                                             line * constants.TILE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
+                                                             constants.TILE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
+                                                             constants.TILE_HEIGHT - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(constants.NUMBER_OF_TILES)] 
+                                                  for line in range(constants.NUMBER_OF_TILES)]
         self.__next_state = copy.deepcopy(self.__current_state)
 
 
@@ -55,7 +54,7 @@ class Grid:
             for d_column in range(-1, 2):
                 
                 if (d_line == 0 and d_column == 0 or 
-                    not (-1 < d_line + line < constants.NUMBER_OF_SQUARES and -1 < d_column + column < constants.NUMBER_OF_SQUARES)):
+                    not (-1 < d_line + line < constants.NUMBER_OF_TILES and -1 < d_column + column < constants.NUMBER_OF_TILES)):
                     continue
                 
                 if self.__current_state[d_line + line][d_column + column].is_alive():
@@ -98,8 +97,8 @@ class Grid:
             if self.__frames >= 60.0 / self.__frames_per_second:
                 self.__frames = 0
 
-                for line in range(constants.NUMBER_OF_SQUARES):
-                    for column in range(constants.NUMBER_OF_SQUARES):
+                for line in range(constants.NUMBER_OF_TILES):
+                    for column in range(constants.NUMBER_OF_TILES):
                         neighbors = self.__get_neighbors_alive(line, column)
 
                         if self.__current_state[line][column] and neighbors < 2:
@@ -116,8 +115,8 @@ class Grid:
 
                 self.__current_state = copy.deepcopy(self.__next_state)
 
-        for line in range(constants.NUMBER_OF_SQUARES):
-            for column in range(constants.NUMBER_OF_SQUARES):
+        for line in range(constants.NUMBER_OF_TILES):
+            for column in range(constants.NUMBER_OF_TILES):
                 self.__current_state[line][column].update()
 
 
@@ -133,6 +132,6 @@ class Grid:
         self.__speed_text = self.__speed_font.render(f"Speed: {self.__frames_per_second} frames per second", False, (180, 180, 180))
         surface.blit(self.__speed_text, (10, 390))
 
-        for line in range(constants.NUMBER_OF_SQUARES):
-            for column in range(constants.NUMBER_OF_SQUARES):
+        for line in range(constants.NUMBER_OF_TILES):
+            for column in range(constants.NUMBER_OF_TILES):
                 self.__current_state[line][column].draw_at(surface)

@@ -47,12 +47,12 @@ class Tile:
 
 
     def draw_at(self, surface: pygame.Surface) -> None:
-        color = constants.SQUARE_COLOR_WHEN_DEAD
+        color = constants.TILE_COLOR_WHEN_DEAD
 
         if self.__selected:
-            color = constants.SQUARE_COLOR_WHEN_SELECTED
+            color = constants.TILE_COLOR_WHEN_SELECTED
         
         elif self.__alive:
-            color = constants.SQUARE_COLOR_WHEN_ALIVE
+            color = constants.TILE_COLOR_WHEN_ALIVE
 
         pygame.draw.rect(surface, color, self.__rect)
