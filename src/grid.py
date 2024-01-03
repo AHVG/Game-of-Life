@@ -8,7 +8,7 @@ import tile
 
 class Grid:
 
-    # TODO: fazer tamanho variavel do grid para o usuario escolher
+    # TODO: Informar na tela a possibilidade de aumentar e diminuir o tamanho e mostrar o atual tamanho
 
     def __init__(self) -> None:
         self.__current_state: list[list[tile.Tile]] = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
@@ -36,14 +36,18 @@ class Grid:
 
         self.__speed_text = self.__speed_font.render(f"Speed: {self.__frames_per_second} frames per second", False, (180, 180, 180))
 
+        self.__current_number_of_tiles = constants.NUMBER_OF_TILES
+        self.__current_tile_width = constants.TILE_WIDTH
+        self.__current_tile_height = constants.TILE_HEIGHT
+
 
     def __reset(self):
         self.__current_state = [[tile.Tile(random.choices([False, True], [3, 1], k=1)[0],
-                                                             pygame.Rect(column * constants.TILE_WIDTH + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
-                                                             line * constants.TILE_HEIGHT + constants.MARGIN_BETWEEN_TILE, 
-                                                             constants.TILE_WIDTH - 2 * constants.MARGIN_BETWEEN_TILE, 
-                                                             constants.TILE_HEIGHT - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(constants.NUMBER_OF_TILES)] 
-                                                  for line in range(constants.NUMBER_OF_TILES)]
+                                                             pygame.Rect(column * self.__current_tile_width + constants.MARGIN_BETWEEN_TILE + constants.MENU_SIZE[0], 
+                                                             line * self.__current_tile_height + constants.MARGIN_BETWEEN_TILE, 
+                                                             self.__current_tile_width - 2 * constants.MARGIN_BETWEEN_TILE, 
+                                                             self.__current_tile_height - 2 * constants.MARGIN_BETWEEN_TILE)) for column in range(self.__current_number_of_tiles)] 
+                                                  for line in range(self.__current_number_of_tiles)]
         self.__next_state = copy.deepcopy(self.__current_state)
 
 
@@ -54,7 +58,7 @@ class Grid:
             for d_column in range(-1, 2):
                 
                 if (d_line == 0 and d_column == 0 or 
-                    not (-1 < d_line + line < constants.NUMBER_OF_TILES and -1 < d_column + column < constants.NUMBER_OF_TILES)):
+                    not (-1 < d_line + line < self.__current_number_of_tiles and -1 < d_column + column < self.__current_number_of_tiles)):
                     continue
                 
                 if self.__current_state[d_line + line][d_column + column].is_alive():
@@ -72,6 +76,11 @@ class Grid:
                         tile.switch_state()
 
 
+    def __recalculate_grid_dimensions(self) -> None:
+        self.__current_tile_width = (constants.WINDOW_SIZE[0] - constants.MENU_SIZE[0]) / self.__current_number_of_tiles
+        self.__current_tile_height = constants.WINDOW_SIZE[1] / self.__current_number_of_tiles
+
+
     def handle_keydown(self, key: int) -> None:
 
         if key == pygame.K_DOWN:
@@ -81,6 +90,18 @@ class Grid:
         elif key == pygame.K_UP:
             if self.__frames_per_second < constants.MAX_FRAMES:
                 self.__frames_per_second += constants.FRAME_STEP
+
+        elif key == pygame.K_m:
+            if self.__current_number_of_tiles < constants.MAX_NUMBER_OF_TILES:
+                self.__current_number_of_tiles += 1
+                self.__recalculate_grid_dimensions()
+                self.__reset()
+
+        elif key == pygame.K_n:
+            if self.__current_number_of_tiles > constants.MIN_NUMBER_OF_TILES:
+                self.__current_number_of_tiles -= 1
+                self.__recalculate_grid_dimensions()
+                self.__reset()
 
         elif key == pygame.K_p:
             self.__paused = not self.__paused
@@ -97,8 +118,8 @@ class Grid:
             if self.__frames >= 60.0 / self.__frames_per_second:
                 self.__frames = 0
 
-                for line in range(constants.NUMBER_OF_TILES):
-                    for column in range(constants.NUMBER_OF_TILES):
+                for line in range(self.__current_number_of_tiles):
+                    for column in range(self.__current_number_of_tiles):
                         neighbors = self.__get_neighbors_alive(line, column)
 
                         if self.__current_state[line][column] and neighbors < 2:
@@ -115,8 +136,8 @@ class Grid:
 
                 self.__current_state = copy.deepcopy(self.__next_state)
 
-        for line in range(constants.NUMBER_OF_TILES):
-            for column in range(constants.NUMBER_OF_TILES):
+        for line in range(self.__current_number_of_tiles):
+            for column in range(self.__current_number_of_tiles):
                 self.__current_state[line][column].update()
 
 
@@ -132,6 +153,6 @@ class Grid:
         self.__speed_text = self.__speed_font.render(f"Speed: {self.__frames_per_second} frames per second", False, (180, 180, 180))
         surface.blit(self.__speed_text, (10, 390))
 
-        for line in range(constants.NUMBER_OF_TILES):
-            for column in range(constants.NUMBER_OF_TILES):
+        for line in range(self.__current_number_of_tiles):
+            for column in range(self.__current_number_of_tiles):
                 self.__current_state[line][column].draw_at(surface)
