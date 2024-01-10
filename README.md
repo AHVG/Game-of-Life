@@ -23,7 +23,7 @@ Finalmente, após ter feito todos passos anteriores, execute os seguintes comand
 
 ## Como funciona
 
-Ao abrir, estará uma tela onde à esquerda tem as teclas possíveis de serem usados e suas funções e à direita a simulação do Game of Life.
+Ao abrir, estará uma tela onde à esquerda tem as teclas possíveis de serem usados e suas funções e à direita a simulação do Game of Life. A seguir estão imagens do programa.
 
 # Imagem 1
 
