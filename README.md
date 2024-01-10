@@ -25,6 +25,7 @@ Finalmente, após ter feito todos passos anteriores, execute os seguintes comand
 
 Ao abrir, estará uma tela onde à esquerda tem as teclas possíveis de serem usados e suas funções e à direita a simulação do Game of Life. A seguir estão imagens do programa.
 
-# Imagem 1
+![image](https://github.com/AHVG/Game-of-Life/assets/97568599/bc3b74eb-f417-4b9d-9796-dea8f49d7526)
 
-# Imagem 2
+![image](https://github.com/AHVG/Game-of-Life/assets/97568599/601be422-78b1-49a8-985a-0d78096510c2)
+
