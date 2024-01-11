@@ -17,7 +17,7 @@ Para uma melhorar experiência, é interessante usar um ambiente virtual do pyth
 
 Depois de criado e ativado o ambiente virtual, basta executar o pip na raiz do projeto para instalar o requirements.txt. Para isso, use o seguinte comando `pip3 install -r requirements.txt`, para o linux, e `pip install -r requirements.txt`, para o Windows.
 
-### Excetudando o programa
+### Executando o programa
 
 Finalmente, após ter feito todos passos anteriores, execute os seguintes comandos na raiz do projeto para executá-lo: `cd src/` e, em seguida, `python3 main.py`, para linux, ou `python main.py`, para Windows.
 
